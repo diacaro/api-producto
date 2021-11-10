@@ -15,4 +15,8 @@ class ProductService {
 
         return productRepository.findAll()
     }
+    fun save(product:Product): Product {
+
+        return productRepository.save(product)
+    }
 }
