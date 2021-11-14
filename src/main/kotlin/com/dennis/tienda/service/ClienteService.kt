@@ -13,6 +13,7 @@ class ClienteService {
     @Autowired
     lateinit var clienteRepository: ClienteRepository
 
+
     fun list(): List<Client> {
 
         return clienteRepository.findAll()

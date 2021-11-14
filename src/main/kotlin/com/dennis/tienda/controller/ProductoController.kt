@@ -37,5 +37,4 @@ class ProductoController {
         return productoService.delete(id)
     }
 
-
 }

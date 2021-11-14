@@ -11,7 +11,6 @@ class ProductoService {
     @Autowired
     lateinit var productRepository: ProductRepository
 
-
     fun list(): List<Product> {
 
         return productRepository.findAll()
