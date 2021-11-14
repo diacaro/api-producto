@@ -17,5 +17,19 @@ class ClientController {
     fun list(): List<Client> {
         return clientService.list()
     }
+    @PutMapping
+    fun update (@RequestBody client: Client): Client {
+        return clientService.update(client)
+    }
+
+    @PatchMapping
+    fun updateCedula (@RequestBody client: Client): Client {
+        return clientService.updateCedula(client)
+    }
+
+    @DeleteMapping("/delete/{id}")
+    fun delete (@PathVariable ("id") id: Long): Boolean {
+        return clientService.delete(id)
+    }
 
 }

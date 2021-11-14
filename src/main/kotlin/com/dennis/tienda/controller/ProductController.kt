@@ -22,4 +22,19 @@ class ProductController {
         return productService.save(product)
 
     }
+    @PutMapping
+    fun update (@RequestBody product: Product): Product {
+        return productService.update(product)
+    }
+
+    @PatchMapping
+    fun updateDescription (@RequestBody product: Product): Product{
+        return productService.updateDescription(product)
+    }
+
+    @DeleteMapping("/delete/{id}")
+    fun delete (@PathVariable ("id") id: Long): Boolean {
+        return productService.delete(id)
+    }
+
 }
