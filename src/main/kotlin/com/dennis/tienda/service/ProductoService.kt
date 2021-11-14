@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestBody
 
 @Service
-class ProductService {
+class ProductoService {
     @Autowired
     lateinit var productRepository: ProductRepository
 
@@ -20,6 +20,7 @@ class ProductService {
 
         return productRepository.save(product)
     }
+
     fun update(@RequestBody product: Product): Product {
         return productRepository.save(product)
     }
@@ -37,4 +38,5 @@ class ProductService {
         productRepository.deleteById(id)
         return true
     }
+
 }

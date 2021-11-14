@@ -1,39 +1,43 @@
 package com.dennis.tienda.service
 
 import com.dennis.tienda.model.Client
-import com.dennis.tienda.repository.ClientRepository
+import com.dennis.tienda.repository.ClienteRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+
 import org.springframework.web.bind.annotation.RequestBody
 
+
 @Service
-class ClientService {
+class ClienteService {
     @Autowired
-    lateinit var clientRepository: ClientRepository
+    lateinit var clienteRepository: ClienteRepository
 
     fun list(): List<Client> {
 
-        return clientRepository.findAll()
+        return clienteRepository.findAll()
     }
-    fun save(@RequestBody client:Client): Client{
-        return clientRepository.save(client)
+
+    fun save (@RequestBody client:Client): Client{
+        return clienteRepository.save(client)
     }
 
     fun update(@RequestBody client: Client): Client {
-        return clientRepository.save(client)
+        return clienteRepository.save(client)
     }
 
     fun updateCedula (client: Client): Client {
-        val response = clientRepository.findById(client.id)
+        val response = clienteRepository.findById(client.id)
             ?: throw Exception()
         response.apply {
             this.ci=client.ci
         }
-        return clientRepository.save(response)
+        return clienteRepository.save(response)
     }
 
     fun delete (id:Long): Boolean{
-        clientRepository.deleteById(id)
+        clienteRepository.deleteById(id)
         return true
     }
+
 }
