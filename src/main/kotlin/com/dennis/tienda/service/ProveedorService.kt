@@ -20,11 +20,20 @@ class ProveedorService {
     }
 
     fun save (@RequestBody proveedor: Proveedor): Proveedor {
-        return proveedorRepository.save(proveedor)
+
+        if (proveedor.nombre.equals("") && proveedor.telefono.equals("")&& proveedor.categoria .equals("")) {
+            throw Exception()
+        } else {
+            return proveedorRepository.save(proveedor)
+        }
     }
 
     fun update(@RequestBody proveedor: Proveedor): Proveedor {
-        return proveedorRepository.save(proveedor)
+        if (proveedor.nombre.equals("") && proveedor.telefono.equals("")&& proveedor.categoria .equals("")) {
+            throw Exception()
+        } else {
+            return proveedorRepository.save(proveedor)
+        }
     }
 
     fun updateTelefono (proveedor: Proveedor): Proveedor {

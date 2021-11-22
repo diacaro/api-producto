@@ -19,26 +19,50 @@ class ClienteService {
         return clienteRepository.findAll()
     }
 
-    fun save (@RequestBody client:Client): Client{
-        return clienteRepository.save(client)
+    fun save(@RequestBody client: Client): Client {
+
+        if (client.nombre.equals("") && client.ci.equals("")) {
+            throw Exception()
+        } else {
+            return clienteRepository.save(client)
+        }
     }
 
     fun update(@RequestBody client: Client): Client {
-        return clienteRepository.save(client)
+        if (client.nombre.equals("") && client.ci.equals("")) {
+            throw Exception()
+        } else {
+            return clienteRepository.save(client)
+        }
     }
+//
+//    fun updateCedula(client: Client): Client {
+//        val response = clienteRepository.findById(client.id)
+//            ?: throw Exception()
+//        response.apply {
+//            this.ci = client.ci
+//        }
+//        return clienteRepository.save(response)
+//
+//        if (client.ci.equals("")) {
+//
+//        } else {
+//            return clienteRepository.save(client)
+//        }
+//    }
 
-    fun updateCedula (client: Client): Client {
+    fun updateNombre(client: Client): Client {
         val response = clienteRepository.findById(client.id)
             ?: throw Exception()
         response.apply {
-            this.ci=client.ci
+            this.nombre = client.nombre
         }
         return clienteRepository.save(response)
     }
-
-    fun delete (id:Long): Boolean{
+    fun delete(id: Long): Boolean {
         clienteRepository.deleteById(id)
         return true
     }
+
 
 }

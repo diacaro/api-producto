@@ -17,11 +17,19 @@ class ProductoService {
     }
     fun save(product:Product): Product {
 
-        return productRepository.save(product)
+        if (product.description.equals("") && product.details.equals("")) {
+            throw Exception()
+        } else {
+            return productRepository.save(product)
+        }
     }
 
     fun update(@RequestBody product: Product): Product {
-        return productRepository.save(product)
+        if (product.description.equals("") && product.details.equals("")) {
+            throw Exception()
+        } else {
+            return productRepository.save(product)
+        }
     }
 
     fun updateDescription (product: Product): Product {
