@@ -3,8 +3,10 @@ package com.dennis.tienda.service
 import com.dennis.tienda.model.Proveedor
 import com.dennis.tienda.repository.ProveedorRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.server.ResponseStatusException
 
 @Service
 
@@ -20,29 +22,47 @@ class ProveedorService {
     }
 
     fun save (@RequestBody proveedor: Proveedor): Proveedor {
+        try {
 
-        if (proveedor.nombre.equals("") && proveedor.telefono.equals("")&& proveedor.categoria .equals("")) {
-            throw Exception()
-        } else {
-            return proveedorRepository.save(proveedor)
+            if (proveedor.nombre.equals("") || proveedor.telefono.equals("") || proveedor.categoria.equals("")) {
+                throw Exception()
+            } else {
+                return proveedorRepository.save(proveedor)
+            }
+        }
+        catch (ex: Exception) {
+            throw ResponseStatusException(
+                HttpStatus.NO_CONTENT, "Uno de los campos no es valido", ex)
         }
     }
 
     fun update(@RequestBody proveedor: Proveedor): Proveedor {
-        if (proveedor.nombre.equals("") && proveedor.telefono.equals("")&& proveedor.categoria .equals("")) {
-            throw Exception()
-        } else {
-            return proveedorRepository.save(proveedor)
+        try {
+            if (proveedor.nombre.equals("") || proveedor.telefono.equals("") || proveedor.categoria.equals("")) {
+                throw Exception()
+            } else {
+                return proveedorRepository.save(proveedor)
+            }
+        }
+        catch (ex: Exception) {
+            throw ResponseStatusException(
+                HttpStatus.NO_CONTENT, "Uno de los campos no es valido", ex)
         }
     }
 
     fun updateTelefono (proveedor: Proveedor): Proveedor {
-        val response = proveedorRepository.findById(proveedor.id)
-            ?: throw Exception()
-        response.apply {
-            this.telefono=proveedor.telefono
+        try {
+            val response = proveedorRepository.findById(proveedor.id)
+                ?: throw Exception()
+            response.apply {
+                this.telefono = proveedor.telefono
+            }
+            return proveedorRepository.save(response)
         }
-        return proveedorRepository.save(response)
+        catch (ex: Exception) {
+            throw ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Proveedor No Encontrado", ex)
+        }
     }
 
     fun delete (id:Long): Boolean{
