@@ -28,10 +28,6 @@ class ClienteController {
         return clienteService.update(client)
     }
 
-//    @PatchMapping
-//    fun updateCedula (@RequestBody client: Client): Client {
-//        return clienteService.updateCedula(client)
-//    }
     @PatchMapping
     fun updateNombre (@RequestBody client: Client): Client {
         return clienteService.updateNombre(client)

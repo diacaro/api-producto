@@ -10,6 +10,8 @@ class Orden {
     @Column(updatable = false)
     var id: Long? = null
 
-    var idProducto: String? = null
-    var idClient: String? = null
+    @Column(name="id_cliente")
+    var id_cliente: Long? = null
+    @Column(name="id_producto")
+    var id_producto: Long? = null
 }

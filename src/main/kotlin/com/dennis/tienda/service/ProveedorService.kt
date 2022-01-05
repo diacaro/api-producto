@@ -25,35 +25,35 @@ class ProveedorService {
         try {
 
             if (proveedor.nombre.equals("") || proveedor.telefono.equals("") || proveedor.categoria.equals("")) {
-                throw Exception()
+                throw Exception("Uno de los campos no es valido")
             } else {
                 return proveedorRepository.save(proveedor)
             }
         }
         catch (ex: Exception) {
             throw ResponseStatusException(
-                HttpStatus.NO_CONTENT, "Uno de los campos no es valido", ex)
+                HttpStatus.NOT_FOUND, ex.message)
         }
     }
 
     fun update(@RequestBody proveedor: Proveedor): Proveedor {
         try {
             if (proveedor.nombre.equals("") || proveedor.telefono.equals("") || proveedor.categoria.equals("")) {
-                throw Exception()
+                throw Exception("Uno de los campos no es valido")
             } else {
                 return proveedorRepository.save(proveedor)
             }
         }
         catch (ex: Exception) {
             throw ResponseStatusException(
-                HttpStatus.NO_CONTENT, "Uno de los campos no es valido", ex)
+                HttpStatus.NOT_FOUND, ex.message)
         }
     }
 
     fun updateTelefono (proveedor: Proveedor): Proveedor {
         try {
             val response = proveedorRepository.findById(proveedor.id)
-                ?: throw Exception()
+                ?: throw Exception("Proveedor No Encontrado")
             response.apply {
                 this.telefono = proveedor.telefono
             }
@@ -61,7 +61,7 @@ class ProveedorService {
         }
         catch (ex: Exception) {
             throw ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Proveedor No Encontrado", ex)
+                HttpStatus.NOT_FOUND, ex.message)
         }
     }
 

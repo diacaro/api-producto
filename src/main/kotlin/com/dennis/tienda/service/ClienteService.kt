@@ -2,6 +2,8 @@ package com.dennis.tienda.service
 
 import com.dennis.tienda.model.Client
 import com.dennis.tienda.repository.ClienteRepository
+import com.dennis.tienda.repository.OrdenRepository
+import com.dennis.tienda.repository.ProductRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -24,60 +26,46 @@ class ClienteService {
 
     fun save(@RequestBody client: Client): Client {
         try {
-
             if (client.nombre.equals("") || client.ci.equals("")) {
-                throw Exception()
+                throw Exception("Campo NOMBRE o CI no validos")
             } else {
                 return clienteRepository.save(client)
             }
         }
-        catch (ex: Exception) {
+        catch(ex: Exception){
             throw ResponseStatusException(
-                HttpStatus.NO_CONTENT, "Campo NOMBRE o CI no validos", ex)
+                HttpStatus.NOT_FOUND, ex.message, ex)
         }
     }
 
     fun update(@RequestBody client: Client): Client {
     try {
+        val response = clienteRepository.findById(client.id)
+            ?: throw Exception("El ID ${client.id} de la orden no existe")
         if (client.nombre.equals("") || client.ci.equals("")) {
-            throw Exception()
+            throw Exception("Campo NOMBRE o CI no validos")
         } else {
             return clienteRepository.save(client)
         }
     }
-    catch (ex: Exception) {
+    catch(ex: Exception){
         throw ResponseStatusException(
-            HttpStatus.NO_CONTENT, "Campo NOMBRE o CI no validos", ex)
+            HttpStatus.NOT_FOUND, ex.message, ex)
     }
     }
-//
-//    fun updateCedula(client: Client): Client {
-//        val response = clienteRepository.findById(client.id)
-//            ?: throw Exception()
-//        response.apply {
-//            this.ci = client.ci
-//        }
-//        return clienteRepository.save(response)
-//
-//        if (client.ci.equals("")) {
-//
-//        } else {
-//            return clienteRepository.save(client)
-//        }
-//    }
 
     fun updateNombre(client: Client): Client {
         try {
             val response = clienteRepository.findById(client.id)
-                ?: throw Exception()
+                ?: throw Exception("Cliente No Encontrado")
             response.apply {
                 this.nombre = client.nombre
             }
             return clienteRepository.save(response)
         }
-        catch (ex: Exception) {
+        catch(ex: Exception){
             throw ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Cliente No Encontrado", ex)
+                HttpStatus.NOT_FOUND, ex.message, ex)
         }
     }
     fun delete(id: Long): Boolean {
