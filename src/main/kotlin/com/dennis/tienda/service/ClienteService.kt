@@ -2,14 +2,10 @@ package com.dennis.tienda.service
 
 import com.dennis.tienda.model.Client
 import com.dennis.tienda.repository.ClienteRepository
-import com.dennis.tienda.repository.OrdenRepository
-import com.dennis.tienda.repository.ProductRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.server.ResponseStatusException
 
 
@@ -17,12 +13,13 @@ import org.springframework.web.server.ResponseStatusException
 class ClienteService {
     @Autowired
     lateinit var clienteRepository: ClienteRepository
+    val listaCliente= listOf<String>("Jose","Carlos","Luis")
 
 
     fun list(): List<Client> {
-
         return clienteRepository.findAll()
     }
+
 
     fun save(@RequestBody client: Client): Client {
         try {
@@ -69,8 +66,25 @@ class ClienteService {
         }
     }
     fun delete(id: Long): Boolean {
-        clienteRepository.deleteById(id)
-        return true
+        try{
+            clienteRepository.deleteById(id)
+                ?: throw Exception("No existe el ID")
+            clienteRepository.deleteById(id!!)
+            return true
+        }
+        catch (ex: Exception) {
+            throw ResponseStatusException(
+                HttpStatus.NOT_FOUND, ex.message, ex)
+        }
+
+    }
+    fun validarClientes(tipo: String): Boolean {
+        for (i in listaCliente){
+            if (tipo == i){
+                return true
+            }
+        }
+        return false
     }
 
 
