@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException
 class ClienteService {
     @Autowired
     lateinit var clienteRepository: ClienteRepository
+
     val listaCliente= listOf<String>("Jose","Carlos","Luis")
 
 
@@ -23,11 +24,13 @@ class ClienteService {
 
     fun save(@RequestBody client: Client): Client {
         try {
-            if (client.nombre.equals("") || client.ci.equals("")) {
-                throw Exception("Campo NOMBRE o CI no validos")
-            } else {
-                return clienteRepository.save(client)
-            }
+            client.nombre?.takeIf { it.trim().isNotEmpty() }
+                    ?: throw Exception("El campo 'NOMBRE' no puede estar vacio")
+
+            client.ci?.takeIf { it.trim().isNotEmpty() }
+                ?: throw Exception("El campo 'CI' no puede estar vacio")
+
+            return clienteRepository.save(client)
         }
         catch(ex: Exception){
             throw ResponseStatusException(
@@ -39,11 +42,17 @@ class ClienteService {
     try {
         val response = clienteRepository.findById(client.id)
             ?: throw Exception("El ID ${client.id} de la orden no existe")
-        if (client.nombre.equals("") || client.ci.equals("")) {
-            throw Exception("Campo NOMBRE o CI no validos")
-        } else {
-            return clienteRepository.save(client)
+        client.nombre?.takeIf { it.trim().isNotEmpty() }
+            ?: throw Exception("El campo 'NOMBRE' no puede estar vacio")
+
+        client.ci?.takeIf { it.trim().isNotEmpty() }
+            ?: throw Exception("El campo 'CI' no puede estar vacio")
+
+        if (!validarClientes(client.nombre!!)){
+            throw Exception("El campo 'tipo' no pertenece a la lista")
         }
+
+            return clienteRepository.save(client)
     }
     catch(ex: Exception){
         throw ResponseStatusException(
@@ -55,6 +64,10 @@ class ClienteService {
         try {
             val response = clienteRepository.findById(client.id)
                 ?: throw Exception("Cliente No Encontrado")
+
+            client.nombre?.takeIf { it.trim().isNotEmpty() }
+                ?: throw Exception("El campo 'NOMBRE' no puede estar vacio")
+
             response.apply {
                 this.nombre = client.nombre
             }
@@ -65,10 +78,10 @@ class ClienteService {
                 HttpStatus.NOT_FOUND, ex.message, ex)
         }
     }
-    fun delete(id: Long): Boolean {
-        try{
-            clienteRepository.deleteById(id)
-                ?: throw Exception("No existe el ID")
+    fun delete (id:Long?): Boolean{
+        try {
+            clienteRepository.findById(id)
+                ?: throw Exception("NO existe el ID")
             clienteRepository.deleteById(id!!)
             return true
         }
@@ -76,7 +89,6 @@ class ClienteService {
             throw ResponseStatusException(
                 HttpStatus.NOT_FOUND, ex.message, ex)
         }
-
     }
     fun validarClientes(tipo: String): Boolean {
         for (i in listaCliente){

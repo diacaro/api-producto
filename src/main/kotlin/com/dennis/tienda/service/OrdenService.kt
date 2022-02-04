@@ -60,9 +60,17 @@ class OrdenService {
         }
     }
 
-    fun delete(id: Long): Boolean {
-        ordenRepository.deleteById(id)
-        return true
+    fun delete (id:Long?): Boolean{
+        try {
+            ordenRepository.findById(id)
+                ?: throw Exception("NO existe el ID")
+            ordenRepository.deleteById(id!!)
+            return true
+        }
+        catch (ex: Exception) {
+            throw ResponseStatusException(
+                HttpStatus.NOT_FOUND, ex.message, ex)
+        }
     }
 
 }

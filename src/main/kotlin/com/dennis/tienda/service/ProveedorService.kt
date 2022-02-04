@@ -24,11 +24,15 @@ class ProveedorService {
     fun save (@RequestBody proveedor: Proveedor): Proveedor {
         try {
 
-            if (proveedor.nombre.equals("") || proveedor.telefono.equals("") || proveedor.categoria.equals("")) {
-                throw Exception("Uno de los campos no es valido")
-            } else {
+                proveedor.nombre?.takeIf { it.trim().isNotEmpty() }
+                    ?: throw Exception("El campo 'NOMBRE' no puede estar vacio")
+
+                proveedor.telefono?.takeIf { it.trim().isNotEmpty() }
+                    ?: throw Exception("El campo 'CI' no puede estar vacio")
+
+                proveedor.categoria?.takeIf { it.trim().isNotEmpty() }
+                    ?: throw Exception("El campo 'CI' no puede estar vacio")
                 return proveedorRepository.save(proveedor)
-            }
         }
         catch (ex: Exception) {
             throw ResponseStatusException(
@@ -38,11 +42,18 @@ class ProveedorService {
 
     fun update(@RequestBody proveedor: Proveedor): Proveedor {
         try {
-            if (proveedor.nombre.equals("") || proveedor.telefono.equals("") || proveedor.categoria.equals("")) {
-                throw Exception("Uno de los campos no es valido")
-            } else {
+            val response = proveedorRepository.findById(proveedor.id)
+                ?: throw Exception("El ID ${proveedor.id} del cliente no existe")
+
+            proveedor.nombre?.takeIf { it.trim().isNotEmpty() }
+                ?: throw Exception("El campo 'NOMBRE' no puede estar vacio")
+
+            proveedor.telefono?.takeIf { it.trim().isNotEmpty() }
+                ?: throw Exception("El campo 'CI' no puede estar vacio")
+
+            proveedor.categoria?.takeIf { it.trim().isNotEmpty() }
+                ?: throw Exception("El campo 'CI' no puede estar vacio")
                 return proveedorRepository.save(proveedor)
-            }
         }
         catch (ex: Exception) {
             throw ResponseStatusException(
@@ -54,6 +65,10 @@ class ProveedorService {
         try {
             val response = proveedorRepository.findById(proveedor.id)
                 ?: throw Exception("Proveedor No Encontrado")
+
+            proveedor.telefono?.takeIf { it.trim().isNotEmpty() }
+                ?: throw Exception("El campo 'CI' no puede estar vacio")
+
             response.apply {
                 this.telefono = proveedor.telefono
             }
@@ -65,8 +80,16 @@ class ProveedorService {
         }
     }
 
-    fun delete (id:Long): Boolean{
-        proveedorRepository.deleteById(id)
-        return true
+    fun delete (id:Long?): Boolean{
+        try {
+            proveedorRepository.findById(id)
+                ?: throw Exception("NO existe el ID")
+            proveedorRepository.deleteById(id!!)
+            return true
+        }
+        catch (ex: Exception) {
+            throw ResponseStatusException(
+                HttpStatus.NOT_FOUND, ex.message, ex)
+        }
     }
 }

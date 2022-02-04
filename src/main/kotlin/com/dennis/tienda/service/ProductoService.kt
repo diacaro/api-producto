@@ -20,11 +20,13 @@ class ProductoService {
     }
     fun save(product:Product): Product {
         try {
-            if (product.description.equals("") || product.details.equals("")) {
-                throw Exception("Campo DESCRIPTION o DETAILS no validos")
-            } else {
+
+                product.description?.takeIf { it.trim().isNotEmpty() }
+                    ?: throw Exception("El campo 'NOMBRE' no puede estar vacio")
+
+                product.details?.takeIf { it.trim().isNotEmpty() }
+                    ?: throw Exception("El campo 'CI' no puede estar vacio")
                 return productRepository.save(product)
-            }
         }
         catch (ex: Exception) {
             throw ResponseStatusException(
@@ -36,11 +38,15 @@ class ProductoService {
         try {
             val response = productRepository.findById(product.id)
                 ?: throw Exception("El ID ${product.id} del producto no existe")
-            if (product.description.equals("") || product.details.equals("")) {
-                throw Exception("Campo DESCRIPTION o DETAILS no validos")
-            } else {
+
+            product.description?.takeIf { it.trim().isNotEmpty() }
+                ?: throw Exception("El campo 'NOMBRE' no puede estar vacio")
+
+            product.details?.takeIf { it.trim().isNotEmpty() }
+                ?: throw Exception("El campo 'CI' no puede estar vacio")
+
                 return productRepository.save(product)
-            }
+
         }
         catch(ex: Exception){
             throw ResponseStatusException(
@@ -52,6 +58,10 @@ class ProductoService {
         try {
             val response = productRepository.findById(product.id)
                 ?: throw Exception("Producto No Encontrado")
+
+            product.description?.takeIf { it.trim().isNotEmpty() }
+                ?: throw Exception("El campo 'NOMBRE' no puede estar vacio")
+
             response.apply {
                 this.details = product.details
             }
@@ -63,9 +73,17 @@ class ProductoService {
         }
     }
 
-    fun delete (id:Long): Boolean{
-        productRepository.deleteById(id)
-        return true
+    fun delete (id:Long?): Boolean{
+        try {
+            productRepository.findById(id)
+                ?: throw Exception("NO existe el ID")
+            productRepository.deleteById(id!!)
+            return true
+        }
+        catch (ex: Exception) {
+            throw ResponseStatusException(
+                HttpStatus.NOT_FOUND, ex.message, ex)
+        }
     }
 
 }
